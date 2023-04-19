@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 2.1.6
+    hooks:
+      - id: shellcheck
+        additional_dependencies: [ ]  # Workaround for pre-commit 2.10+
+        args: [ -x ]
+
+  #  - repo: https://github.com/pycqa/isort
+  #    rev: 5.10.1
+  #    hooks:
+  #      - id: isort
+
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args: [ --config=pyproject.toml ]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
+        additional_dependencies: [ "flake8-use-fstring" ]
+
+
+default_language_version:
+  python: python3

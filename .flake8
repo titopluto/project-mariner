@@ -1,0 +1,27 @@
+[flake8]
+max-line-length = 120
+exclude = .venv
+ignore =
+    # Let `black` take care of these:
+    E203, # whitespace before ‘:’
+    E501, # line too long
+    W503, # binary operator after line break
+
+    # TODO: Remove these one by one
+    E402, # module level import not at top of file
+    E722, # do not use bare except, specify exception instead
+    E731, # do not assign a lambda expression, use a def
+    F402, # import module from line N shadowed by loop variable
+    F403, # ‘from module import *’ used; unable to detect undefined names
+    F405, # name may be undefined, or defined from star imports: module
+    F507, # % format mismatch of placeholder and argument count
+    F541, # f-string without any placeholders
+    F601, # dictionary key name repeated with different values
+    F632, # use ==/!= to compare str, bytes, and int literals
+    F811, # redefinition of unused name from line N
+    F821, # undefined name name
+    F841, # local variable name is assigned to but never used
+    F901, # raise NotImplemented should be raise NotImplementedError
+    W605, # invalid escape sequence ‘x’
+    FS002,
+    FS001, E203, E266, E501, W503, F403, F401
