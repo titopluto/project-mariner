@@ -1,0 +1,71 @@
+version: "3.7"
+
+networks:
+  backend:
+
+volumes:
+  db_volume:
+  static_root:
+
+services:
+  database:
+    image: "postgres:13"
+    container_name: "mariner_database"
+    hostname: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_DB=mariner_db"
+      - "POSTGRES_USER=mariner"
+      - "POSTGRES_PASSWORD=secure-password"
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_line_prefix=%m [%d|%p/%x] "]
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    tmpfs:
+      - "/var/lib/postgresql/data"
+    networks:
+      - backend
+#    healthcheck:
+#      test: ["CMD", "psql", "-U", "postgres", "-d", "mariner_db", "-c", "SELECT 1;"]
+#      interval: 2s
+#      start_period: 60s
+
+  api_service:
+    image: mariner-api-service:dev
+    container_name: api_service
+    build:
+      context: ".."
+      dockerfile: "docker/Dockerfile"
+    env_file:
+      - ../.env.dev
+    restart: "always"
+    command: bash -c "python3 manage.py makemigrations
+      && python manage.py migrate --noinput
+      && python manage.py collectstatic --no-input --clear
+      && gunicorn mariner_site.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - ./src/:/app/src/
+      - static_root:/app/static_root
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    networks:
+      - backend
+
+  web_proxy:
+    image: "mariner-proxy"
+    container_name: "web-proxy"
+    build:
+      context: "nginx/"
+    hostname: "web-proxy"
+    ports:
+      - "80:80"
+    volumes:
+      - static_root:/app/static_root/
+    depends_on:
+      - api_service
+    healthcheck:
+      disable: true
+    networks:
+      - backend
