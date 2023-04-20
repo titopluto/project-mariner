@@ -3,6 +3,7 @@ from http import HTTPStatus
 import pytest
 
 from django.urls import reverse
+from src.tests.factories import UserFactory
 
 
 @pytest.fixture
@@ -49,9 +50,55 @@ def test_check_that_invalid_birthday_format_returns_error(
     user_payload.update(birthdate="19-19-19")
 
     response = client.post(user_create_list_url, user_payload)
-    print(response.json())
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_get_user_is_successful(client, generated_user):
+    url = f"/api/users/{generated_user.id}"
+
+    response = client.get(url)
+    data = response.json()
+
+    assert response.status_code == HTTPStatus.OK
+    assert data["id"] == str(generated_user.id)
+    assert data["email"] == generated_user.email
+    assert data["username"] == generated_user.username
+
+
+@pytest.mark.django_db
+def test_delete_user_is_successful(client, generated_user, django_user_model):
+    url = f"/api/users/{generated_user.id}"
+
+    response = client.delete(url)
+    users = django_user_model.objects.filter(id=generated_user.id)
+
+    assert response.status_code == HTTPStatus.NO_CONTENT
+    assert users.exists() is False
+
+
+@pytest.mark.django_db
+def test_list_user_is_successful(
+    client, generated_user, django_user_model, user_create_list_url
+):
+    UserFactory.create_batch(5)
+    response = client.get(user_create_list_url)
+
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.data) == 6
+
+
+@pytest.mark.django_db
+def test_search_user_is_successful(
+    client, generated_user, django_user_model, user_create_list_url
+):
+    UserFactory.create_batch(5)
+    url = f"/api/users/?family_name=Unknown"
+    response = client.get(url)
+
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.data) == 0
 
 
 @pytest.mark.django_db

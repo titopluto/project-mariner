@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -19,6 +19,19 @@ class UserListCreate(ListCreateAPIView):
 
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
+    filterset_fields = ("family_name",)
+
+
+class UserRetrieveDelete(RetrieveUpdateDestroyAPIView):
+    """
+    API View that lists all users and Create a new User.
+    get: Returns a list of  all users.
+    post: Create a new User
+    """
+
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    lookup_field = "id"
 
 
 class UserGrantPermission(APIView):
