@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
         return permission_data
 
     def create(self, validated_data):
-
+        """Create a new user"""
         return self.Meta.model.objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):

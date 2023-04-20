@@ -13,7 +13,8 @@ from .serializer import UserSerializer
 class UserListCreate(ListCreateAPIView):
     """
     API View that lists all users and Create a new User.
-    get: Returns a list of  all users.
+    get: Returns a list of  all users. Filter by passing a query string
+    e.g: ?family_name=james
     post: Creates a new User
     """
 

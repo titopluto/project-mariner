@@ -6,6 +6,8 @@ from django.db import models
 
 # Create your models here.
 class Permission(models.Model):
+    """Model class for the Permission Table"""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=100)
     granted_date = models.DateField(blank=True, null=True, default=datetime.date.today)

@@ -21,10 +21,6 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, username, password, **extra_fields):
-        """
-        Create and save a user with the given username, email, and password.
-        """
-
         if not email:
             raise ValueError("The given email must be set")
         if not username:
@@ -40,6 +36,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, username, password, **extra_fields):
+        """
+        Create and save a user with the given username, email, and password.
+        """
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, username, password, **extra_fields)
@@ -47,6 +46,9 @@ class UserManager(BaseUserManager):
     def create_superuser(
         self, email=None, username=None, password=None, **extra_fields
     ):
+        """
+        Create and save a superuser with the given username, email, and password.
+        """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -58,6 +60,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, username, password, **extra_fields)
 
     def update_password(self, password, email=None, username=None):
+        """function to update password for a user object"""
         if email is None and username is None:
             raise ValueError("User must supply either an email or username")
         if email:
@@ -80,6 +83,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """Model class for the Users Table"""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     permissions = models.ManyToManyField("permission.Permission", related_name="users")
     email = models.EmailField(_("email address"), max_length=255, unique=True)

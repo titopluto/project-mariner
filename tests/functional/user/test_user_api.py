@@ -3,7 +3,7 @@ from http import HTTPStatus
 import pytest
 
 from django.urls import reverse
-from src.tests.factories import UserFactory
+from tests.factories import UserFactory
 
 
 @pytest.fixture
