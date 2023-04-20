@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,7 +14,7 @@ class UserListCreate(ListCreateAPIView):
     """
     API View that lists all users and Create a new User.
     get: Returns a list of  all users.
-    post: Create a new User
+    post: Creates a new User
     """
 
     serializer_class = UserSerializer
@@ -22,11 +22,11 @@ class UserListCreate(ListCreateAPIView):
     filterset_fields = ("family_name",)
 
 
-class UserRetrieveDelete(RetrieveUpdateDestroyAPIView):
+class UserRetrieveDelete(RetrieveDestroyAPIView):
     """
     API View that lists all users and Create a new User.
-    get: Returns a list of  all users.
-    post: Create a new User
+    get: Returns a user given their id.
+    delete: Deletes a user given their id
     """
 
     queryset = get_user_model().objects.all()
@@ -36,11 +36,14 @@ class UserRetrieveDelete(RetrieveUpdateDestroyAPIView):
 
 class UserGrantPermission(APIView):
     """
-    API View that grants permission to a user.
-    post: Grant new permission to a new user
+    API View that grants permission to a user
     """
 
     def post(self, request):
+        """
+        Grant New Permission to a user.
+        In the URL, supply query parameters: user_id and permission_id
+        """
         user_id = request.query_params.get("user_id")
         permission_id = request.query_params.get("permission_id")
 
@@ -63,6 +66,10 @@ class UserGrantPermission(APIView):
         )
 
     def delete(self, request):
+        """
+        Deletes a Permission from a user.
+        In the URL, supply query parameters: user_id and permission_id
+        """
         user_id = request.query_params.get("user_id")
         permission_id = request.query_params.get("permission_id")
 

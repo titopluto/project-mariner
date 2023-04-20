@@ -1,0 +1,17 @@
+#pycharm files
+.idea/
+
+#python cache
+*/__pycache__/
+
+
+#media files
+media/
+
+#django app migration files
+*/migrations/*
+!*/migrations/__init__.py
+
+#ignore git
+.git*
+

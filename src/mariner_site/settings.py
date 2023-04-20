@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # External libraries
     "rest_framework",
+    "rest_framework_swagger",
     "django_filters",
     # apps
     "user",
@@ -60,7 +61,7 @@ ROOT_URLCONF = "mariner_site.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
