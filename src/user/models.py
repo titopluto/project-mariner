@@ -1,12 +1,16 @@
+import uuid
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
+from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from permission.models import Permission
 
 alphanumeric = RegexValidator(
     r"^[0-9a-zA-Z]*$", "Only alphanumeric characters are allowed."
@@ -76,6 +80,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    permissions = models.ManyToManyField("permission.Permission", related_name="users")
     email = models.EmailField(_("email address"), max_length=255, unique=True)
     username = models.CharField(
         _("username"),
@@ -152,3 +158,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         full_name = "%s %s" % (self.given_name, self.family_name)
         return full_name.strip()
+
+    def grant_permission(self, permission_id):
+        permission = Permission.objects.get(id=permission_id)
+        if permission:
+            return self.permissions.add(permission)
+
+    def revoke_permission(self, permission_id):
+        permission = Permission.objects.get(id=permission_id)
+        if permission:
+            return self.permissions.remove(permission)

@@ -3,9 +3,10 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer class designed to create a new user model"""
+    """Serializer class for the User Model"""
 
     password = serializers.CharField(write_only=True, min_length=5)
+    permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
@@ -17,8 +18,26 @@ class UserSerializer(serializers.ModelSerializer):
             "given_name",
             "family_name",
             "birthdate",
+            "permissions",
         )
         read_only_fields = ("id",)
+
+    def get_permissions(self, obj):
+        # Retrieve the related permissions objects
+        permissions = obj.permissions.all()
+
+        # Extract the desired fields from each permission object
+        permission_data = []
+        for permission in permissions:
+            permission_data.append(
+                {
+                    "permission_id": permission.id,
+                    "type": permission.name,
+                    "name": permission.description,
+                }
+            )
+
+        return permission_data
 
     def create(self, validated_data):
 

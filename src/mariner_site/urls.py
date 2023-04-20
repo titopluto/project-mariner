@@ -18,6 +18,7 @@ from django.urls import path
 from django.conf.urls import include
 
 from user import urls as user_urls
+from permission import urls as permission_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,4 +27,5 @@ urlpatterns = [
 # RestFramework URL
 urlpatterns += [
     path("api/users/", include(user_urls)),
+    path("api/permissions/", include(permission_urls)),
 ]
