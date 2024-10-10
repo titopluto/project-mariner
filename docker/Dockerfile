@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye as build-env-image
+FROM python:3.12.7-slim-bullseye as build-env-image
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV PROJECT_ROOT "/app"
@@ -19,7 +19,7 @@ RUN set -eu; \
     poetry install --no-dev;
 
 
-FROM python:3.10-slim-bullseye
+FROM python:3.12.7-slim-bullseye
 
 ENV PROJECT_ROOT "/app"
 ENV PATH="${PROJECT_ROOT}/.venv/bin:${PATH}"
